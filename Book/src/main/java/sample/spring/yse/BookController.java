@@ -35,16 +35,27 @@ public class BookController {
 	    return mav;
 	}
 	
+	@RequestMapping(value = "/detail", method = RequestMethod.GET)
 	public ModelAndView detail(@RequestParam Map<String, Object> map) {
-		Map<String, Object> detailMap = this.bookService.detail(map);
-		
-		ModelAndView mav = new ModelAndView();
-		mav.addObject("data", detailMap);
-		String bookId = map.get("bookId").toString();
-		mav.addObject("bookId", bookId);
-		mav.setViewName("/book/detail");
-		return mav;
+	    Map<String, Object> detailMap = this.bookService.detail(map);
+
+	    ModelAndView mav = new ModelAndView();
+	    mav.addObject("data", detailMap);
+	    String bookId = map.get("bookId").toString();
+	    mav.addObject("bookId", bookId);
+	    mav.setViewName("/book/detail");
+	    return mav;
 	}
+	
+	@RequestMapping(value = "/update", method = RequestMethod.GET)  
+	public ModelAndView update(@RequestParam Map<String, Object> map) {  
+	Map<String, Object> detailMap = this.bookService.detail(map);  
+
+	ModelAndView mav = new ModelAndView();  
+	mav.addObject("data", detailMap);  
+	mav.setViewName("/book/update");  
+	return mav;  
+	} 
 	
 }
 
