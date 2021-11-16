@@ -1,5 +1,6 @@
 package sample.spring.yse;
 
+import java.util.List;
 import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
@@ -22,5 +23,13 @@ public class BookDAO {
 	
 	public int update(Map<String, Object> map) {
 		return this.sqlSessionTemplate.update("book.update", map);
+	}
+	
+	public int delete(Map<String, Object> map) {
+		return this.sqlSessionTemplate.delete("book.delete", map);
+	}
+	
+	public List<Map<String, Object>> selectList(Map<String, Object> map) {
+		return this.sqlSessionTemplate.selectList("book.select_list", map);
 	}
 }	

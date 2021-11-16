@@ -1,11 +1,13 @@
 package sample.spring.yse;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -15,13 +17,13 @@ public class BookController {
 	@Autowired
 	BookService bookService;
 	
-	@RequestMapping(value = "/create", method = RequestMethod.GET)
+	@GetMapping(value = "/create")
 	public ModelAndView create() {
 		return new ModelAndView("book/create");
 	}
 	
 	 
-	@RequestMapping(value = "/create", method = RequestMethod.POST)
+	@PostMapping(value = "create")
 	public ModelAndView createPost(@RequestParam Map<String, Object> map) {
 	    ModelAndView mav = new ModelAndView();
 
@@ -35,7 +37,7 @@ public class BookController {
 	    return mav;
 	}
 	
-	@RequestMapping(value = "/detail", method = RequestMethod.GET)
+	@GetMapping(value = "/detail")
 	public ModelAndView detail(@RequestParam Map<String, Object> map) {
 	    Map<String, Object> detailMap = this.bookService.detail(map);
 
@@ -47,7 +49,7 @@ public class BookController {
 	    return mav;
 	}
 	
-	@RequestMapping(value = "/update", method = RequestMethod.GET)  
+	@PutMapping(value = "/update")  
 	public ModelAndView update(@RequestParam Map<String, Object> map) {  
 	Map<String, Object> detailMap = this.bookService.detail(map);  
 
@@ -56,6 +58,50 @@ public class BookController {
 	mav.setViewName("/book/update");  
 	return mav;  
 	} 
+	
+	@PostMapping(value = "update")
+	public ModelAndView updatePost(@RequestParam Map<String, Object> map) {
+		ModelAndView mav = new ModelAndView();
+		
+		boolean isUpdateSuccess = this.bookService.edit(map);
+		if (isUpdateSuccess) {
+			String bookId = map.get("bookId").toString();
+			mav.setViewName("redirect:/detail?bookId=" + bookId);
+		} else {
+			mav = this.update(map);
+		}
+		
+	return mav;
+	}
+	
+	@PostMapping(value = "delete")
+	public ModelAndView deletePost(@RequestParam Map<String, Object> map) {
+		ModelAndView mav = new ModelAndView();
+		
+		boolean isDeleteSuccess = this.bookService.remove(map);
+		if(isDeleteSuccess) {
+			mav.setViewName("redirect:/list");
+		} else {
+			String bookId = map.get("bookId").toString();
+			mav.setViewName("redirect:/detail?bookId=" + bookId);
+		}
+		return mav;
+	}
+	
+	@GetMapping(value = "list")
+	public ModelAndView list(@RequestParam Map<String, Object> map) {
+		List<Map<String, Object>> list = this.bookService.list(map);
+		
+		ModelAndView mav = new ModelAndView();
+		mav.addObject("data", list);
+		
+		if(map.containsKey("keyword")) {
+			mav.addObject("keyword", map.get("keyword"));
+		}
+		
+		mav.setViewName("/book/list");
+		return mav;
+	}
 	
 }
 
